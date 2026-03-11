@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MENU_VERSION="1.0.0"
+MENU_VERSION="1.1.0"
 
 CONFIG_DIR="$HOME/.config/openclaw-menu"
 INSTALL_URL_FILE="$CONFIG_DIR/install_url"
@@ -254,7 +254,7 @@ check_openclaw
 
 while true
 do
-  CHOICE=$(whiptail --title "【鸿祺龙虾】运维菜单 v$MENU_VERSION" --menu "请选择功能" 20 60 10 \
+  CHOICE=$(whiptail --title "【鸿龙】运维菜单 v$MENU_VERSION" --menu "请选择功能" 20 60 10 \
   1 "服务管理" \
   2 "模型管理" \
   3 "通道管理" \

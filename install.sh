@@ -9,7 +9,7 @@ APP_DIR="$HOME/.local/share/applications"
 CONFIG_DIR="$HOME/.config/openclaw-menu"
 
 echo
-echo "【鸿祺龙虾】运维菜单 安装 / 更新程序"
+echo "【鸿龙】运维菜单 安装 / 更新程序"
 echo
 
 if ! command -v openclaw >/dev/null 2>&1; then
@@ -49,7 +49,7 @@ ln -sf "$INSTALL_DIR/openclaw-menu.desktop" "$APP_DIR/openclaw-menu.desktop"
 
 if [ -d "$HOME/桌面" ]; then
   echo "创建桌面启动器..."
-  ln -sf "$INSTALL_DIR/openclaw-menu.desktop" "$HOME/桌面/【鸿祺龙虾】运维菜单.desktop"
+  ln -sf "$INSTALL_DIR/openclaw-menu.desktop" "$HOME/桌面/openclaw-menu.desktop"
 fi
 
 echo "$BASE_URL/install.sh" > "$CONFIG_DIR/install_url"
@@ -62,5 +62,5 @@ echo "安装 / 更新完成！"
 echo
 echo "运行方式："
 echo "1. 终端输入：openclaw-menu"
-echo "2. 桌面双击：【鸿祺龙虾】运维菜单"
+echo "2. 桌面双击：【鸿龙】运维菜单"
 echo

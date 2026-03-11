@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MENU_VERSION="1.1.0"
+MENU_VERSION="1.2.0"
 
 CONFIG_DIR="$HOME/.config/openclaw-menu"
 INSTALL_URL_FILE="$CONFIG_DIR/install_url"

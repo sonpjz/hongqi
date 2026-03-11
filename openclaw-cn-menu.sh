@@ -1,20 +1,51 @@
 #!/usr/bin/env bash
 
-MENU_VERSION="1.3.0"
+# 补齐桌面启动时常缺失的 PATH
+export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
+
+# 尝试加载用户环境，兼容 npm 全局安装路径
+[ -f "$HOME/.profile" ] && . "$HOME/.profile" >/dev/null 2>&1
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" >/dev/null 2>&1
+
+MENU_VERSION="1.4.0"
 
 CONFIG_DIR="$HOME/.config/openclaw-menu"
 INSTALL_URL_FILE="$CONFIG_DIR/install_url"
 VERSION_URL_FILE="$CONFIG_DIR/version_url"
+
+OC=""
 
 pause() {
   read -p "按回车返回菜单..."
 }
 
 check_openclaw() {
-  if ! command -v openclaw >/dev/null 2>&1; then
+  local OPENCLAW_BIN=""
+  OPENCLAW_BIN="$(command -v openclaw 2>/dev/null || true)"
+
+  if [ -z "$OPENCLAW_BIN" ]; then
+    for p in \
+      "/usr/local/bin/openclaw" \
+      "/usr/bin/openclaw" \
+      "$HOME/.local/bin/openclaw" \
+      "$HOME/.npm-global/bin/openclaw"
+    do
+      if [ -x "$p" ]; then
+        OPENCLAW_BIN="$p"
+        break
+      fi
+    done
+  fi
+
+  if [ -z "$OPENCLAW_BIN" ]; then
     echo "未检测到 OpenClaw"
+    echo
+    echo "请先在终端执行：which openclaw"
+    echo "如果终端里能找到，但桌面启动找不到，通常是 PATH 环境变量不同导致。"
     exit 1
   fi
+
+  OC="$OPENCLAW_BIN"
 }
 
 service_menu() {
@@ -30,12 +61,12 @@ service_menu() {
     7 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw gateway status ;;
-      2) openclaw gateway start ;;
-      3) openclaw gateway stop ;;
-      4) openclaw gateway restart ;;
-      5) openclaw logs --follow ;;
-      6) openclaw doctor ;;
+      1) "$OC" gateway status ;;
+      2) "$OC" gateway start ;;
+      3) "$OC" gateway stop ;;
+      4) "$OC" gateway restart ;;
+      5) "$OC" logs --follow ;;
+      6) "$OC" doctor ;;
       7) break ;;
       *) break ;;
     esac
@@ -55,13 +86,13 @@ model_menu() {
     5 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw models status ;;
-      2) openclaw models list ;;
+      1) "$OC" models status ;;
+      2) "$OC" models list ;;
       3)
         MODEL=$(whiptail --inputbox "输入 provider/model\n例如 openai/gpt-5" 10 60 3>&1 1>&2 2>&3)
-        [ -n "$MODEL" ] && openclaw models set "$MODEL"
+        [ -n "$MODEL" ] && "$OC" models set "$MODEL"
         ;;
-      4) openclaw models status --probe ;;
+      4) "$OC" models status --probe ;;
       5) break ;;
       *) break ;;
     esac
@@ -83,12 +114,12 @@ channel_menu() {
     7 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw channels list ;;
-      2) openclaw channels add --channel telegram ;;
-      3) openclaw channels add --channel feishu ;;
-      4) openclaw channels login ;;
-      5) openclaw channels remove ;;
-      6) openclaw channels status --probe ;;
+      1) "$OC" channels list ;;
+      2) "$OC" channels add --channel telegram ;;
+      3) "$OC" channels add --channel feishu ;;
+      4) "$OC" channels login ;;
+      5) "$OC" channels remove ;;
+      6) "$OC" channels status --probe ;;
       7) break ;;
       *) break ;;
     esac
@@ -107,12 +138,12 @@ plugin_menu() {
     4 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw plugins list ;;
+      1) "$OC" plugins list ;;
       2)
         PLUGIN=$(whiptail --inputbox "输入插件路径或 URL" 10 60 3>&1 1>&2 2>&3)
-        [ -n "$PLUGIN" ] && openclaw plugins install "$PLUGIN"
+        [ -n "$PLUGIN" ] && "$OC" plugins install "$PLUGIN"
         ;;
-      3) ls ~/.openclaw/skills ;;
+      3) ls "$HOME/.openclaw/skills" ;;
       4) break ;;
       *) break ;;
     esac
@@ -156,17 +187,17 @@ openclaw_update_menu() {
     4 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw update status ;;
+      1) "$OC" update status ;;
       2)
         if whiptail --yesno "确认更新 OpenClaw？" 10 60; then
-          openclaw update
+          "$OC" update
           echo
-          openclaw doctor
+          "$OC" doctor
         else
           echo "已取消"
         fi
         ;;
-      3) openclaw update --dry-run ;;
+      3) "$OC" update --dry-run ;;
       4) break ;;
       *) break ;;
     esac
@@ -235,10 +266,10 @@ system_menu() {
     8 "返回" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-      1) openclaw --version ;;
+      1) "$OC" --version ;;
       2) node -v ;;
-      3) which openclaw ;;
-      4) openclaw ;;
+      3) echo "$OC" ;;
+      4) "$OC" ;;
       5) check_panel_update ;;
       6) openclaw_update_menu ;;
       7) echo "当前运维面板版本：$MENU_VERSION" ;;

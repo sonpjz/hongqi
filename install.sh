@@ -14,13 +14,13 @@ echo
 echo "【鸿龙】运维菜单 安装 / 更新程序"
 echo
 
-if ! command -v openclaw >/dev/null 2>&1; then
-  echo "未检测到 OpenClaw，请先安装 OpenClaw"
+if ! command -v curl >/dev/null 2>&1; then
+  echo "未检测到 curl，请先安装 curl"
   exit 1
 fi
 
-if ! command -v curl >/dev/null 2>&1; then
-  echo "未检测到 curl，请先安装 curl"
+if ! command -v openclaw >/dev/null 2>&1; then
+  echo "未检测到 OpenClaw，请先安装 OpenClaw"
   exit 1
 fi
 
@@ -42,13 +42,17 @@ curl -fsSL "$BASE_URL/version.txt" -o "$CONFIG_DIR/version.txt"
 
 chmod +x "$INSTALL_DIR/openclaw-cn-menu.sh"
 
-# 修复 .desktop 文件可能存在的 Windows CRLF 换行符
+# 修复 .desktop 的 Windows CRLF 换行符
 sed -i 's/\r$//' "$INSTALL_DIR/openclaw-menu.desktop"
+
+# 强制把 Exec 改成和当前菜单脚本匹配的启动方式
+sed -i "s|^Exec=.*|Exec=bash -lc '/usr/local/bin/openclaw-menu'|" "$INSTALL_DIR/openclaw-menu.desktop"
 
 chmod +x "$INSTALL_DIR/openclaw-menu.desktop"
 
 echo "创建系统命令..."
 sudo ln -sf "$INSTALL_DIR/openclaw-cn-menu.sh" "$BIN_LINK"
+sudo chmod +x "$BIN_LINK" 2>/dev/null || true
 
 echo "创建应用菜单启动器..."
 cp -f "$INSTALL_DIR/openclaw-menu.desktop" "$APP_DIR/openclaw-menu.desktop"

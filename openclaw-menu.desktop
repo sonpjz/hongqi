@@ -1,9 +1,9 @@
 [Desktop Entry]
-Version=1.3.0
+Version=1.4.0
 Type=Application
 Name=【鸿龙】运维菜单
 Comment=HongLong OpenClaw Menu
-Exec=/usr/local/bin/openclaw-menu
+Exec=bash -lc '/usr/local/bin/openclaw-menu'
 Icon=utilities-terminal
 Terminal=true
 Categories=Utility;

@@ -7,7 +7,7 @@ INSTALL_DIR="$HOME/openclaw-tools"
 BIN_LINK="/usr/local/bin/openclaw-menu"
 APP_DIR="$HOME/.local/share/applications"
 CONFIG_DIR="$HOME/.config/openclaw-menu"
-DESKTOP_DIR="$HOME/桌面"
+DESKTOP_DIR="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
 DESKTOP_FILE_NAME="【鸿龙】运维菜单.desktop"
 
 echo
@@ -41,11 +41,14 @@ curl -fsSL "$BASE_URL/openclaw-menu.desktop" -o "$INSTALL_DIR/openclaw-menu.desk
 curl -fsSL "$BASE_URL/version.txt" -o "$CONFIG_DIR/version.txt"
 
 chmod +x "$INSTALL_DIR/openclaw-cn-menu.sh"
+
+# 修复 .desktop 文件可能存在的 Windows CRLF 换行符
+sed -i 's/\r$//' "$INSTALL_DIR/openclaw-menu.desktop"
+
 chmod +x "$INSTALL_DIR/openclaw-menu.desktop"
 
 echo "创建系统命令..."
 sudo ln -sf "$INSTALL_DIR/openclaw-cn-menu.sh" "$BIN_LINK"
-sudo chmod +x "$BIN_LINK" 2>/dev/null || true
 
 echo "创建应用菜单启动器..."
 cp -f "$INSTALL_DIR/openclaw-menu.desktop" "$APP_DIR/openclaw-menu.desktop"
@@ -68,5 +71,9 @@ echo "安装 / 更新完成！"
 echo
 echo "运行方式："
 echo "1. 终端输入：openclaw-menu"
-echo "2. 桌面双击：$DESKTOP_FILE_NAME"
+echo "2. 应用菜单搜索：鸿龙"
+if [ -d "$DESKTOP_DIR" ]; then
+  echo "3. 桌面双击：$DESKTOP_FILE_NAME"
+  echo "   如果第一次双击无法打开，请右键该图标，选择“允许启动”"
+fi
 echo

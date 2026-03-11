@@ -2,8 +2,9 @@
 Version=1.0
 Type=Application
 Name=【鸿龙】运维菜单
-Comment=OpenClaw Maintenance Menu
-Exec=gnome-terminal -- openclaw-menu
+Comment=HongLong OpenClaw Menu
+Exec=gnome-terminal -- bash -c "/usr/local/bin/openclaw-menu; exec bash"
 Icon=utilities-terminal
 Terminal=false
 Categories=Utility;
+StartupNotify=true

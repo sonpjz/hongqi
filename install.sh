@@ -7,6 +7,8 @@ INSTALL_DIR="$HOME/openclaw-tools"
 BIN_LINK="/usr/local/bin/openclaw-menu"
 APP_DIR="$HOME/.local/share/applications"
 CONFIG_DIR="$HOME/.config/openclaw-menu"
+DESKTOP_DIR="$HOME/桌面"
+DESKTOP_FILE_NAME="【鸿龙】运维菜单.desktop"
 
 echo
 echo "【鸿龙】运维菜单 安装 / 更新程序"
@@ -43,13 +45,17 @@ chmod +x "$INSTALL_DIR/openclaw-menu.desktop"
 
 echo "创建系统命令..."
 sudo ln -sf "$INSTALL_DIR/openclaw-cn-menu.sh" "$BIN_LINK"
+sudo chmod +x "$BIN_LINK" 2>/dev/null || true
 
 echo "创建应用菜单启动器..."
-ln -sf "$INSTALL_DIR/openclaw-menu.desktop" "$APP_DIR/openclaw-menu.desktop"
+cp -f "$INSTALL_DIR/openclaw-menu.desktop" "$APP_DIR/openclaw-menu.desktop"
+chmod +x "$APP_DIR/openclaw-menu.desktop"
 
-if [ -d "$HOME/桌面" ]; then
+if [ -d "$DESKTOP_DIR" ]; then
   echo "创建桌面启动器..."
-  ln -sf "$INSTALL_DIR/openclaw-menu.desktop" "$HOME/桌面/openclaw-menu.desktop"
+  cp -f "$INSTALL_DIR/openclaw-menu.desktop" "$DESKTOP_DIR/$DESKTOP_FILE_NAME"
+  chmod +x "$DESKTOP_DIR/$DESKTOP_FILE_NAME"
+  gio set "$DESKTOP_DIR/$DESKTOP_FILE_NAME" metadata::trusted true 2>/dev/null || true
 fi
 
 echo "$BASE_URL/install.sh" > "$CONFIG_DIR/install_url"
@@ -62,5 +68,5 @@ echo "安装 / 更新完成！"
 echo
 echo "运行方式："
 echo "1. 终端输入：openclaw-menu"
-echo "2. 桌面双击：【鸿龙】运维菜单"
+echo "2. 桌面双击：$DESKTOP_FILE_NAME"
 echo

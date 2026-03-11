@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=【鸿祺龙虾】运维菜单
+Comment=OpenClaw Maintenance Menu
+Exec=gnome-terminal -- openclaw-menu
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;
